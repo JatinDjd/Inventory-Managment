@@ -10,8 +10,8 @@ import { InventoryGateway } from './inventory.gateway';
 @Injectable()
 export class InventoryService {
   constructor(
-    @InjectRepository(Inventory)
-    private readonly inventory:Repository<Inventory>,
+    @InjectRepository(Inventory)                          //Fetch entity through InjectRepository decorator and create an object for it
+    private readonly inventory:Repository<Inventory>,    
     private readonly inventoryGateway: InventoryGateway,
   ) {}
 
@@ -20,8 +20,8 @@ export class InventoryService {
   async create(data) {
     try {
       
-      const items = await this.inventory.save(data)
-      this.inventoryGateway.handleItemCreated(items);
+      const items = await this.inventory.save(data)     // Saves or Creates new entery in inventory
+      this.inventoryGateway.handleItemCreated(items);    // connecting with socket
       return items;
     } catch (error) {
       throw error;
@@ -30,21 +30,21 @@ export class InventoryService {
   }
 
   findAll() {
-    return this.inventory.find();
+    return this.inventory.find();       // Lists all items in inventory
   }
 
   findOne(id: number) {
-    return this.inventory.findOne({ where: { id: id } })
+    return this.inventory.findOne({ where: { id: id } })      // Lists items by id from inventory
   }
 
-  async update(id, updateInventoryDto: UpdateInventoryDto) {
+  async update(id, updateInventoryDto: UpdateInventoryDto) {    // Updates an existing record
     await this.inventory.update(id,updateInventoryDto) ;
     const item = await this.inventory.findOne({ where: { id: id } });
-    this.inventoryGateway.handleItemUpdated(item);
+    this.inventoryGateway.handleItemUpdated(item);          // connecting with socket
     return item
   }
 
-  remove(id: number) {
+  remove(id: number) {          // deletes a record
     return this.inventory.delete(id).then(() => undefined);
   }
 }

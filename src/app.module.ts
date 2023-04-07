@@ -12,9 +12,10 @@ import { Server } from 'http';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({    //Configuring Mysql Database
         type: 'mysql',
         host: configService.get('DB_HOST'),
         // port: +configService.get<number>('DB_PORT'),
